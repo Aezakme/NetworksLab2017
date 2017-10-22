@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include <netdb.h>
-#include <netinet/in.h>
 #include <unistd.h>
 
 #include <string.h>
@@ -25,7 +24,7 @@ int main(int argc, char *argv[]) {
 
     /* Initialize socket structure */
     bzero((char *) &serv_addr, sizeof(serv_addr));
-    portno = 5001;
+    portno = 8080;
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -40,36 +39,36 @@ int main(int argc, char *argv[]) {
     /* Now start listening for the clients, here process will
        * go in sleep mode and will wait for the incoming connection
     */
+    for (;;) {
+        listen(sockfd, 5);
+        clilen = sizeof(cli_addr);
 
-    listen(sockfd, 5);
-    clilen = sizeof(cli_addr);
+        /* Accept actual connection from the client */
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
 
-    /* Accept actual connection from the client */
-    newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+        if (newsockfd < 0) {
+            perror("ERROR on accept");
+            exit(1);
+        }
 
-    if (newsockfd < 0) {
-        perror("ERROR on accept");
-        exit(1);
+        /* If connection is established then start communicating */
+        bzero(buffer, 256);
+        n = read(newsockfd, buffer, 255); // recv on Windows
+
+        if (n < 0) {
+            perror("ERROR reading from socket");
+            exit(1);
+        }
+
+        printf("Here is the message: %s\n", buffer);
+
+        /* Write a response to the client */
+        n = write(newsockfd, "I got your message", 18); // send on Windows
+
+        if (n < 0) {
+            perror("ERROR writing to socket");
+            exit(1);
+        }
+        newsockfd = 0;
     }
-
-    /* If connection is established then start communicating */
-    bzero(buffer, 256);
-    n = read(newsockfd, buffer, 255); // recv on Windows
-
-    if (n < 0) {
-        perror("ERROR reading from socket");
-        exit(1);
-    }
-
-    printf("Here is the message: %s\n", buffer);
-
-    /* Write a response to the client */
-    n = write(newsockfd, "I got your message", 18); // send on Windows
-
-    if (n < 0) {
-        perror("ERROR writing to socket");
-        exit(1);
-    }
-
-    return 0;
 }
