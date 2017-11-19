@@ -6,32 +6,35 @@
 
 #include <string.h>
 
+#define PORT_NUMBER 8080;
+
 int main(int argc, char *argv[]) {
-    int sockfd, newsockfd;
-    uint16_t portno;
-    unsigned int clilen;
+
+    uint16_t port_no = PORT_NUMBER;
+
+    int serverfd, newsockfd;
+    unsigned int client;
     char buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
     ssize_t n;
 
-    /* First call to socket() function */
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (sockfd < 0) {
+    serverfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (serverfd < 0) {
         perror("ERROR opening socket");
         exit(1);
     }
 
     /* Initialize socket structure */
     bzero((char *) &serv_addr, sizeof(serv_addr));
-    portno = 8080;
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno);
+    serv_addr.sin_port = htons(port_no);
 
     /* Now bind the host address using bind() call.*/
-    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+    if (bind(serverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
         perror("ERROR on binding");
         exit(1);
     }
@@ -40,11 +43,11 @@ int main(int argc, char *argv[]) {
        * go in sleep mode and will wait for the incoming connection
     */
     for (;;) {
-        listen(sockfd, 5);
-        clilen = sizeof(cli_addr);
+        listen(serverfd, 5);
+        client = sizeof(cli_addr);
 
         /* Accept actual connection from the client */
-        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+        newsockfd = accept(serverfd, (struct sockaddr *) &cli_addr, &client);
 
         if (newsockfd < 0) {
             perror("ERROR on accept");
@@ -69,6 +72,6 @@ int main(int argc, char *argv[]) {
             perror("ERROR writing to socket");
             exit(1);
         }
-        newsockfd = 0;
+        close(newsockfd);
     }
 }

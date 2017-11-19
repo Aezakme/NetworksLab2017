@@ -19,14 +19,19 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    portno = (uint16_t) atoi(argv[2]);
-
     server = gethostbyname(argv[1]);
 
     if (server == NULL) {
         fprintf(stderr, "ERROR, no such host\n");
         exit(0);
     }
+
+    portno = (uint16_t) atoi(argv[2]);
+
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(portno);
+    bcopy(server->h_addr, (char *) &serv_addr.sin_addr.s_addr, (size_t) server->h_length);
 
     for (;;) {
 
@@ -38,13 +43,10 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        //===========   wtf
-        bzero((char *) &serv_addr, sizeof(serv_addr));
-        serv_addr.sin_family = AF_INET;
-        bcopy(server->h_addr, (char *) &serv_addr.sin_addr.s_addr, (size_t) server->h_length);
-        serv_addr.sin_port = htons(portno);
+
 
         /* Now connect to the server */
+
         if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
             perror("ERROR connecting");
             exit(1);
@@ -57,11 +59,13 @@ int main(int argc, char *argv[]) {
         printf("\nPlease enter the message: ");
         /* Clear buffer */
         bzero(buffer, 256);
+
         /* Read to buffer from stdin */
         fgets(buffer, 255, stdin);
 
         if (buffer == (char *) 'end') {
             printf("\nExit");
+            shutdown(sockfd, 2);
             return 0;
         }
 
