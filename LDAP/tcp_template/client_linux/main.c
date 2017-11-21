@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
-    char buffer[256];
+    char buffer[500];
 
     if (argc < 3) {
         fprintf(stderr, "usage %s hostname port\n", argv[0]);
@@ -58,10 +58,10 @@ int main(int argc, char *argv[]) {
 
         printf("\nPlease enter the message: ");
         /* Clear buffer */
-        bzero(buffer, 256);
+        bzero(buffer, 500);
 
         /* Read to buffer from stdin */
-        fgets(buffer, 255, stdin);
+        fgets(buffer, 500, stdin);
 
         if (buffer == (char *) 'end') {
             printf("\nExit");
@@ -78,8 +78,8 @@ int main(int argc, char *argv[]) {
         }
 
         /* Now read server response */
-        bzero(buffer, 256);
-        n = (int) read(sockfd, buffer, 255);
+        bzero(buffer, 500);
+        n = (int) read(sockfd, buffer, 500);
 
         if (n < 0) {
             perror("ERROR reading from socket");

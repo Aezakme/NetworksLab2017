@@ -8,13 +8,92 @@
 
 #define PORT_NUMBER 8080;
 
+
+char countries[5][200];
+char cities[1000][200];
+char companies[1000][500];
+char employees[10000][200];
+int cities_count = 0, companies_count = 0, workers_count = 0;
+
+char *showHelp(void) {
+    return "Hello! \n"
+            "You went to a free resource with employees of companies from different countries.\n"
+            "This is the educational project by Polyakov Kirill\n"
+            "Commands:\n"
+            "\thelp - show this message\n"
+            "\tadd - add new employee/company/city\n"
+            "\tdel - delete one of employee/company/city\n"
+            "\tfnd -  search by employee/company/city/country\n"
+            "\n"
+            "Example of command:\n"
+            "\tadd em=Sergey Brin,co=Google,cy=Kalifornia,c=US";
+}
+
+char buffer[500];
+
+char *showFull(void) {
+    bzero(buffer, 500);
+    for (int i = 0; i < cities_count; ++i) {
+        strcat(buffer, "c=");
+        strcat(buffer, &countries[i]);
+        strcat(buffer, "; ");
+    }
+    return buffer;
+}
+
+char *add(char *query) {
+    bzero(buffer, 500);
+    strcat(buffer, "add method: ");
+    strcat(buffer, query);
+    return buffer;
+}
+
+char *delete(char *query) {
+    bzero(buffer, 500);
+    strcat(buffer, "delete method: ");
+    strcat(buffer, query);
+
+    return buffer;
+}
+
+char *find(char *query) {
+    bzero(buffer, 500);
+    strcat(buffer, "find method: ");
+    strcat(buffer, query);
+    return buffer;
+}
+
+
+void init() {
+    strcpy(countries[0], "RUSSIA");
+    strcpy(countries[1], "USA");
+    strcpy(countries[2], "FRANCE");
+    strcpy(countries[3], "BELARUS");
+    strcpy(countries[4], "GERMANY");
+
+    strcpy(cities[0], "0MOSCOW");
+    strcpy(cities[1], "0SAINT-PETERSBURG");
+    strcpy(cities[2], "1BOSTON");
+
+    strcpy(companies[0], "0GOOGLE");
+    strcpy(companies[1], "1SPBSTU");
+    strcpy(companies[2], "2BOSTON-DYNAMICS");
+
+    strcpy(employees[0], "1artyom.aleksyuk");
+    strcpy(employees[1], "1itsykson.vladimir");
+
+    cities_count = 5;
+    companies_count = 3;
+    workers_count = 2;
+}
+
 int main(int argc, char *argv[]) {
 
+    init();
     uint16_t port_no = PORT_NUMBER;
 
     int serverfd, newsockfd;
     unsigned int client;
-    char buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
     ssize_t n;
 
@@ -56,17 +135,62 @@ int main(int argc, char *argv[]) {
 
         /* If connection is established then start communicating */
         bzero(buffer, 256);
-        n = read(newsockfd, buffer, 255); // recv on Windows
+        n = read(newsockfd, buffer, 255); // recv
 
         if (n < 0) {
             perror("ERROR reading from socket");
             exit(1);
         }
 
+        if (strcmp(buffer, "help\n") == 0) {
+            if (write(newsockfd, showHelp(), 376) < 0) {
+                perror("ERROR writing to socket");
+                exit(1);
+            }
+            close(newsockfd);
+            continue;
+        }
+
+        if (strcmp(buffer, "show\n") == 0) {
+            if (write(newsockfd, showFull(), 500) < 0) {
+                perror("ERROR writing to socket");
+                exit(1);
+            }
+            close(newsockfd);
+            continue;
+        }
+
+        if (strncmp(buffer, "add\n", 3) == 0) {
+            if (write(newsockfd, add(buffer), 500) < 0) {
+                perror("ERROR writing to socket");
+                exit(1);
+            }
+            close(newsockfd);
+            continue;
+        }
+
+        if (strncmp(buffer, "del\n", 3) == 0) {
+            if (write(newsockfd, delete(buffer), 500) < 0) {
+                perror("ERROR writing to socket");
+                exit(1);
+            }
+            close(newsockfd);
+            continue;
+        }
+
+        if (strncmp(buffer, "fnd\n", 3) == 0) {
+            if (write(newsockfd, find(buffer), 500) < 0) {
+                perror("ERROR writing to socket");
+                exit(1);
+            }
+            close(newsockfd);
+            continue;
+        }
+
         printf("Here is the message: %s\n", buffer);
 
         /* Write a response to the client */
-        n = write(newsockfd, "I got your message", 18); // send on Windows
+        n = write(newsockfd, "I got your message", 18);
 
         if (n < 0) {
             perror("ERROR writing to socket");
@@ -75,3 +199,4 @@ int main(int argc, char *argv[]) {
         close(newsockfd);
     }
 }
+
