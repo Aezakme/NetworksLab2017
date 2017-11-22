@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <netdb.h>
 #include <unistd.h>
-
 #include <string.h>
 
 #define PORT_NUMBER 8080;
@@ -26,41 +24,61 @@ char *showHelp(void) {
             "\tfnd -  search by employee/company/city/country\n"
             "\n"
             "Example of command:\n"
-            "\tadd em=Sergey Brin,co=Google,cy=Kalifornia,c=US";
+            "\tadd em=Sergey Brin,co=Google,cy=Kalifornia,ca=US";
 }
 
 char buffer[500];
+char method_buffer[500];
 
 char *showFull(void) {
-    bzero(buffer, 500);
+    bzero(method_buffer, 500);
     for (int i = 0; i < cities_count; ++i) {
-        strcat(buffer, "c=");
-        strcat(buffer, &countries[i]);
-        strcat(buffer, "; ");
+        strcat(method_buffer, "c=");
+        strcat(method_buffer, &countries[i]);
+        strcat(method_buffer, "; ");
     }
-    return buffer;
+    return method_buffer;
 }
 
 char *add(char *query) {
-    bzero(buffer, 500);
-    strcat(buffer, "add method: ");
-    strcat(buffer, query);
-    return buffer;
+    bzero(method_buffer, 500);
+    if (isValid(query) < 0) {
+        strcat(method_buffer, "add method: ");
+        strcat(method_buffer, query);
+    } else {
+        strcat(method_buffer, "Syntax error");
+        return method_buffer;
+    }
+    return method_buffer;
 }
 
 char *delete(char *query) {
-    bzero(buffer, 500);
-    strcat(buffer, "delete method: ");
-    strcat(buffer, query);
+    bzero(method_buffer, 500);
+    if (isValid(query) > 0) {
+        strcat(method_buffer, "delete method: ");
+        strcat(method_buffer, query);
+    } else {
+        strcat(method_buffer, "Syntax error");
+        return method_buffer;
+    }
 
-    return buffer;
+    return method_buffer;
 }
 
 char *find(char *query) {
-    bzero(buffer, 500);
-    strcat(buffer, "find method: ");
-    strcat(buffer, query);
-    return buffer;
+    bzero(method_buffer, 500);
+    if (isValid(query) > 0) {
+        strcat(method_buffer, "find method: ");
+        strcat(method_buffer, query);
+        return method_buffer;
+    } else {
+        strcat(method_buffer, "Syntax error");
+        return method_buffer;
+    }
+}
+
+int isValid(char *query) {
+    return 1;
 }
 
 
@@ -160,7 +178,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        if (strncmp(buffer, "add\n", 3) == 0) {
+        if (strncmp(buffer, "add", 3) == 0) {
             if (write(newsockfd, add(buffer), 500) < 0) {
                 perror("ERROR writing to socket");
                 exit(1);
@@ -169,7 +187,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        if (strncmp(buffer, "del\n", 3) == 0) {
+        if (strncmp(buffer, "del", 3) == 0) {
             if (write(newsockfd, delete(buffer), 500) < 0) {
                 perror("ERROR writing to socket");
                 exit(1);
@@ -178,7 +196,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        if (strncmp(buffer, "fnd\n", 3) == 0) {
+        if (strncmp(buffer, "fnd", 3) == 0) {
             if (write(newsockfd, find(buffer), 500) < 0) {
                 perror("ERROR writing to socket");
                 exit(1);
