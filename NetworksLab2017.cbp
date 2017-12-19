@@ -129,7 +129,16 @@
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_linux/main.c">
 			<Option target="LDAP_client"/>
 		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_linux/main.h">
+			<Option target="LDAP_client"/>
+		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/main.c">
+			<Option target="LDAP_server"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/server.c">
+			<Option target="LDAP_server"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/server.h">
 			<Option target="LDAP_server"/>
 		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/CMakeLists.txt">

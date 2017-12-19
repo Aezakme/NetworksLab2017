@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
+
+
     server = gethostbyname(argv[1]);
 
     if (server == NULL) {

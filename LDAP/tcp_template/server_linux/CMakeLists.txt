@@ -3,5 +3,5 @@ project(server_linux)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 
-set(SOURCE_FILES main.c)
+set(SOURCE_FILES main.c server.h server.c)
 add_executable(LDAP_server ${SOURCE_FILES})
