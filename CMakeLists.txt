@@ -12,4 +12,6 @@ set(CMAKE_CXX_FLAGS "$CMAKE_CXX_FLAGS} -pthread -g2 -O0")
 
 ADD_SUBDIRECTORY(LDAP/tcp_template/client_linux)
 ADD_SUBDIRECTORY(LDAP/tcp_template/server_linux)
+ADD_SUBDIRECTORY(LDAP/tcp_template/client_win)
+ADD_SUBDIRECTORY(LDAP/tcp_template/server_win)
 

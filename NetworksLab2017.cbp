@@ -5,7 +5,7 @@
 		<Option title="NetworksLab2017"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\LDAP\;CMake Files\LDAP\tcp_template\;CMake Files\LDAP\tcp_template\client_linux\;CMake Files\LDAP\tcp_template\server_linux\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\LDAP\;CMake Files\LDAP\tcp_template\;CMake Files\LDAP\tcp_template\client_linux\;CMake Files\LDAP\tcp_template\server_linux\;CMake Files\LDAP\tcp_template\client_win\;CMake Files\LDAP\tcp_template\server_win\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/Users/kirill/CLionProjects/NetworksLab2017"/>
@@ -125,12 +125,103 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="LDAP_client_win">
+				<Option output="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/LDAP_client_win" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 LDAP_client_win"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="LDAP_client_win/fast">
+				<Option output="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/LDAP_client_win" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 LDAP_client_win/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="LDAP_server_win">
+				<Option output="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/LDAP_server_win" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 LDAP_server_win"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="LDAP_server_win/fast">
+				<Option output="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/LDAP_server_win" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 LDAP_server_win/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 		</Build>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_linux/main.c">
 			<Option target="LDAP_client"/>
 		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_linux/main.h">
 			<Option target="LDAP_client"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/main.c">
+			<Option target="LDAP_client_win"/>
 		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/main.c">
 			<Option target="LDAP_server"/>
@@ -140,6 +231,18 @@
 		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/server.h">
 			<Option target="LDAP_server"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/connectinohandler.c">
+			<Option target="LDAP_server_win"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/main.c">
+			<Option target="LDAP_server_win"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/server.c">
+			<Option target="LDAP_server_win"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/server.h">
+			<Option target="LDAP_server_win"/>
 		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
@@ -155,6 +258,18 @@
 		</Unit>
 		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_linux/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\LDAP\tcp_template\server_linux\"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\LDAP\tcp_template\client_win\"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/client_win/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\LDAP\tcp_template\client_win\"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\LDAP\tcp_template\server_win\"/>
+		</Unit>
+		<Unit filename="/Users/kirill/CLionProjects/NetworksLab2017/LDAP/tcp_template/server_win/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\LDAP\tcp_template\server_win\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>
