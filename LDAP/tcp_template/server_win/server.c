@@ -5,6 +5,7 @@
 //#include <string.h>
 #include <stdio.h>
 #include <strings.h>
+#include <pthread.h>
 
 
 #pragma clang diagnostic push
@@ -15,9 +16,14 @@ char cities[1000][256];
 char companies[1000][256];
 char employees[10000][256];
 
+
+pthread_mutex_t mutex;
+
 int countries_count = 0, cities_count = 0, companies_count = 0, workers_count = 0;
 
 void init(void) {
+    pthread_mutex_init(&mutex, NULL);
+
     strcpy(countries[0], "RUSSIA");
     strcpy(countries[1], "USA");
     strcpy(countries[2], "FRANCE");
@@ -59,32 +65,46 @@ char *showHelp(void) {
 
 int isValid(char *query) {
     int counter = 0;
-    counter += strncmp(query += 4, "ca=", 3);
-    counter += strncmp(query = strstr(query, ",") + 1, "cy=", 3);
-    counter += strncmp(query = strstr(query, ",") + 1, "co=", 3);
-    counter += strncmp(query = strstr(query, ",") + 1, "em=", 3);
-
-    if ((strstr(query, ",") != NULL) || (counter < 0)) {
+    int temp = 0;
+    query += 4;
+    temp = strncmp(query, "ca=", 3);
+    query = strstr(query, ",") + 1;
+    counter += temp;
+    temp = strncmp(query, "cy=", 3);
+    query = strstr(query, ",") + 1;
+    counter += temp;
+    temp = strncmp(query, "co=", 3);
+    query = strstr(query, ",") + 1;
+    counter += temp;
+    temp = strncmp(query, "em=", 3);
+//    query = strstr(query, ",") + 1;
+    counter += temp;
+    if ((counter < 0)) {
         return -1;
     }
-    return 1;
+    return counter;
 }
 
 
 char *find(char *query) {
+    pthread_mutex_lock(&mutex);
     char type[3] = "";
     char search_query[256] = "";
     memset(method_buffer, 0, 500);
-    strcat(query, "\n");
-    strncpy(type, query, strstr(query, "=") - query);
+    strcat(method_buffer, query);
+    query = strcat(method_buffer, "\n");
+//    memset(method_buffer, 0, 500);
+
+    strncat(type, query, strstr(query, "=") - query);
     query += 3;
-    strncpy(search_query, query, strstr(query, "\n") - query);
+    strncat(search_query, query, strstr(query, "\n") - query);
 
     if (strncmp(type, "ca", 2) == 0) {
         for (int i = 0; i < countries_count; ++i) {
             if (strcmp(countries[i], search_query) == 0) {
                 strcat(method_buffer, "ca=");
                 strcat(method_buffer, countries[i]);
+                pthread_mutex_unlock(&mutex);
                 return method_buffer;
             }
         }
@@ -133,12 +153,13 @@ char *find(char *query) {
         }
     }
     strcat(method_buffer, " ");
+    pthread_mutex_unlock(&mutex);
     return method_buffer;
-
 }
 
 char *showAll(void) {
 //    bzero(method_buffer, 500);
+    pthread_mutex_lock(&mutex);
     memset(method_buffer, 0, 500);
     for (int i = 0; i < workers_count; ++i) {
         if (strncmp(employees[i], "d", 1) != 0) {
@@ -154,13 +175,13 @@ char *showAll(void) {
             strcat(method_buffer, "\n");
         }
     }
+    pthread_mutex_unlock(&mutex);
     return method_buffer;
 }
 
 int indexFind(char *query) {
     char type[3] = "";
     char search_query[256] = "";
-//    bzero(method_buffer, 500);
     memset(method_buffer, 0, 500);
     strcat(query, "\n");
     strncpy(type, query, strstr(query, "=") - query);
@@ -265,24 +286,28 @@ char *delete(char *query) {
 }
 
 char *add(char *query) {
-    strcat(query, "\n");
-    memset(method_buffer, 0, 500);
-    strcat(method_buffer, query);
+    pthread_mutex_lock(&mutex);
+    char temp_buffer[500];
+    memset(temp_buffer, 0, 500);
+    strcat(temp_buffer, query);
     char temp[256] = "";
     char name[256] = "";
-    int index = -1;
-    if (isValid(query) == 1) {
-        query += 4;
-        strncpy(temp, query, strstr(query, ",") - query);
+    char *link = query;
+    link = strcat(temp_buffer, "\n");
+    int index = 0;
+    if (isValid(temp_buffer) == 0) {
+        link += 4;
+        strncpy(temp, link, strstr(link, ",") - link);
         int search_index = indexFind(temp);
         if (search_index == -1) {
             strcat(method_buffer, "Country not found");
+            pthread_mutex_unlock(&mutex);
             return method_buffer;
         }
         index = search_index;
 
-        query = strstr(query, ",") + 1;
-        strncpy(temp, query, strstr(query, ",") - query);
+        link = strstr(link, ",") + 1;
+        strncpy(temp, link, strstr(link, ",") - link);
         sprintf(name, "cy=%d%s", index, temp + 3);
         search_index = indexFind(name);
         if (search_index == -1) {
@@ -294,12 +319,12 @@ char *add(char *query) {
             index = search_index;
         }
 
-        query = strstr(query, ",") + 1;
+        link = strstr(link, ",") + 1;
         memset(temp, 0, 256);
-//        bzero(temp, 256);
-        strncpy(temp, query, strstr(query, ",") - query);
+        strncpy(temp, link, strstr(link, ",") - link);
         sprintf(name, "co=%d%s", index, temp + 3);
         search_index = indexFind(name);
+
         if (search_index == -1) {
             strncpy(temp, name, strstr(name, "\n") - name);
             strcpy(companies[companies_count], temp + 3);
@@ -309,10 +334,8 @@ char *add(char *query) {
             index = search_index;
         }
 
-        query = strstr(query, ",") + 1;
-        memset(temp, 0, 500);
-//        bzero(temp, 256);
-        strncpy(temp, query, strstr(query, "\n") - query);
+        link = strstr(link, ",") + 1;
+        strncpy(temp, link, strstr(link, "\n") - link);
         sprintf(name, "em=%d%s", index, temp + 3);
         search_index = indexFind(name);
         if (search_index == -1) {
@@ -320,13 +343,17 @@ char *add(char *query) {
             strcpy(employees[workers_count], temp + 3);
             workers_count++;
         } else {
+            pthread_mutex_unlock(&mutex);
             return "All ready exists";
         }
 
+        pthread_mutex_unlock(&mutex);
         return "Done";
 
     } else {
+        memset(method_buffer, 0, 500);
         strcat(method_buffer, "Syntax error");
+        pthread_mutex_unlock(&mutex);
         return method_buffer;
     }
 }

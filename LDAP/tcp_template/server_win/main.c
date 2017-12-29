@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
 
     /* Initialize socket structure */
     printf("server start\n");
+
     int clilen = sizeof(struct sockaddr_in);
     usersOnline = 0;
     nextUser = 0;
