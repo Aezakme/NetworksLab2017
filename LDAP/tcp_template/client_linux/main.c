@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
     }
 
 
-
     server = gethostbyname(argv[1]);
 
     if (server == NULL) {
@@ -35,28 +34,30 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_port = htons(portno);
     bcopy(server->h_addr, (char *) &serv_addr.sin_addr.s_addr, (size_t) server->h_length);
 
+
+
+    /* Create a socket point */
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (sockfd < 0) {
+        perror("ERROR opening socket");
+        exit(1);
+    }
+
+
+
+    /* Now connect to the server */
+
+    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+        perror("ERROR connecting");
+        exit(1);
+    }
     for (;;) {
-
-        /* Create a socket point */
-        sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-        if (sockfd < 0) {
-            perror("ERROR opening socket");
-            exit(1);
-        }
-
-
-
-        /* Now connect to the server */
-
-        if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-            perror("ERROR connecting");
-            exit(1);
-        }
-
         /* Now ask for a message from the user, this message
          * will be read by server
          */
+
+
 
         printf("\nPlease enter the message: ");
         /* Clear buffer */
@@ -67,8 +68,7 @@ int main(int argc, char *argv[]) {
 
         if (buffer == (char *) 'end') {
             printf("\nExit");
-            shutdown(sockfd, 2);
-            return 0;
+            break;
         }
 
         /* Send message to the server */
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 
         if (n < 0) {
             perror("ERROR writing to socket");
-            exit(1);
+            break;
         }
 
         /* Now read server response */
@@ -85,11 +85,12 @@ int main(int argc, char *argv[]) {
 
         if (n < 0) {
             perror("ERROR reading from socket");
-            exit(1);
+            break;
         }
 
         printf("%s\n", buffer);
 
-        shutdown(sockfd, 2);
     }
+    shutdown(sockfd, 2);
+    return 0;
 }
