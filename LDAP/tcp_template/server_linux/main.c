@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
     printf("\n== del ==\n");
     bzero(buffer, 256);
-    strcpy(buffer, "ca=RUSSIA,cy=Saint-Petersburg,co=SPbSTU,em=Aleksyuk Artyom");
+    strcpy(buffer, "ca=RUSSIA,cy=Saint-Petersburg,co=SPbSTU,em=Aleksyuk Artyom"add);
     printf(delete(buffer));
     printf("\n");
     printf(showAll());

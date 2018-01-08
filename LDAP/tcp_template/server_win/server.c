@@ -224,66 +224,98 @@ int indexFind(char *query) {
 }
 
 char *delete(char *query) {
-//    bzero(method_buffer, 500);
     memset(method_buffer, 0, 500);
     strcat(query, "\n");
-    if (strncmp(find(query), " ", 1) != 0) {
-        query += 3;
-        int counter = 0;
-        for (unsigned int i = 0; i < sizeof(query); ++i) {
-            if (query[i] == ',') {
-                counter++;
+
+    int counter = 0;
+
+    for (int i = 0; i < strlen(query); ++i) {
+        if (query[i] == ',') {
+            counter++;
+        }
+    }
+    if (counter == 0) {
+        return "can't delete Country";
+    }
+    int index = -1;
+    char temp[256];
+    char temp1[256];
+    if (counter == 1) {
+        strncpy(method_buffer, query, strstr(query, ",") - query);
+        strncpy(temp, query + strlen(method_buffer) + 4, strstr(query, "\n") - query);
+        temp[strlen(temp) - 1] = 0;
+        for (int i = 0; i < cities_count; ++i) {
+            if (strncmp(cities[i] + 1, temp, strlen(temp) - 1) == 0) {
+                index = i;
             }
         }
-        if (counter == 0) {
-            return "can't delete Country";
-        }
-        int index = 0;
-        char temp[256] = "";
-        if (counter == 1) {
-            strncpy(temp, query, strstr(query, ",") - query);
-            strncpy(temp, query, strstr(query, "\n") - query);
-            index = indexFind(temp);
+        if (index < 0) return "Not found";
 
-            for (int i = 0; i < companies_count; ++i) {
-                if (strncmp(companies[i], index, 1) == 0) {
-                    for (int j = 0; j < workers_count; ++j) {
-                        if (strncmp(employees[j], index, 1) == 0) {
-                            strcpy(employees[j], strcat("d", employees[j] + 1));
-                        }
+        for (int i = 0; i < companies_count; ++i) {
+            char index_char = (char) (index + '0');
+            if (strchr(companies[i], index_char) != NULL) {
+                for (int j = 0; j < workers_count; ++j) {
+                    if (strchr(employees[j], (char) (i + '0')) != NULL) {
+                        strcpy(employees[j], "del");
                     }
-                    strcpy(companies[i], strcat("d", companies[i] + 1));
                 }
+                strcpy(companies[i], "del");
             }
-            strcpy(cities[index], strcat("d", cities[index] + 1));
-
-        } else if (counter == 2) {
-            strncpy(temp, query, strstr(query, ",") - query);
-            strncpy(temp, query, strstr(query, ",") - query);
-            strncpy(temp, query, strstr(query, "\n") - query);
-            index = indexFind(temp);
-            for (int j = 0; j < workers_count; ++j) {
-                if (strncmp(employees[j], index, 1) == 0) {
-                    strcpy(employees[j], strcat("d", employees[j] + 1));
-                }
-            }
-            strcpy(companies[index], strcat("d", companies[index] + 1));
-        } else {
-            strncpy(temp, query, strstr(query, ",") - query);
-            strncpy(temp, query, strstr(query, ",") - query);
-            strncpy(temp, query, strstr(query, ",") - query);
-            strncpy(temp, query, strstr(query, "\n") - query);
-            index = indexFind(temp);
-
-            strcpy(employees[index], strcat("d", employees[index] + 1));
-
         }
+        strcpy(cities[index], "del");
+
+    } else if (counter == 2) {
+        strncpy(method_buffer, query, strstr(query, ",") - query);
+        strncpy(temp, query + strlen(method_buffer), strstr(query, "\n") - query);
+        strncpy(method_buffer, temp, strstr(temp + 1, ",") - temp);
+        strncpy(temp, temp + strlen(method_buffer) + 4, strstr(temp, "\n") - temp);
+        temp[strlen(temp) - 1] = 0;
+
+        for (int i = 0; i < companies_count; ++i) {
+            if (strncmp(companies[i] + 1, temp, strlen(temp) - 1) == 0) {
+                index = i;
+            }
+        }
+
+        if (index < 0) return "Not found";
+
+        for (int j = 0; j < workers_count; ++j) {
+            if (strchr(employees[j], (char) (index + '0')) != NULL) {
+                strcpy(employees[j], "del");
+            }
+        }
+        strcpy(companies[index], "del");
     } else {
-        return "Not found";
+        strncpy(method_buffer, query, strstr(query, ",") - query);
+        strcpy(temp1, query + strlen(method_buffer) + 1);
+        memset(method_buffer, 0, 500);
+        strncpy(method_buffer, temp1 + 1, strstr(temp1 + 2, ",") - temp1);
+        strcpy(temp, temp1 + strlen(method_buffer));
+        memset(method_buffer, 0, 500);
+        strncpy(method_buffer, temp + 1, strstr(temp + 1, ",") - temp);
+        memset(temp1, 0, 256);
+        strcpy(temp1, temp + strlen(method_buffer) + 4);
+
+        temp1[strlen(temp1) - 1] = 0;
+        temp1[strlen(temp1)] = 0;
+
+        for (int i = 0; i < workers_count; ++i) {
+            if (strncmp(employees[i] + 1, temp1, strlen(temp1) - 1) == 0) {
+                strcpy(employees[i], "del");
+                index = 8;
+            }
+        }
+
+        if (index != 8) {
+            return "Not found";
+        }
+
+
     }
 
     return "Done";
 }
+
 
 char *add(char *query) {
     pthread_mutex_lock(&mutex);

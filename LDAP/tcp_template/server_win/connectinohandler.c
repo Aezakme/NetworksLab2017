@@ -83,7 +83,7 @@ DWORD WINAPI ConnectionHandler(void *args) {
         }
 
         if (strncmp(buffer, "del", 3) == 0) {
-            strcpy(buffer, delete(buffer));
+            strcpy(buffer, delete(buffer + 4));
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
                 perror("ERROR writing to socket");
@@ -96,7 +96,7 @@ DWORD WINAPI ConnectionHandler(void *args) {
         }
 
         if (strncmp(buffer, "fnd", 3) == 0) {
-            strcpy(buffer, find(buffer + 1));
+            strcpy(buffer, find(buffer + 4));
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
                 perror("ERROR writing to socket");
