@@ -14,13 +14,11 @@ char *ReadBytes(SOCKET socket, char *answer) {
 int SendBytes(SOCKET socket, char *message) {
     int n = send(socket, message, (int) strlen(message), 0);
     if (n < 0) {
-        perror("1ERROR writing to socket");
+        perror("ERROR writing to socket");
         return -1;
     }
     return n;
 }
-
-
 
 DWORD WINAPI ConnectionHandler(void *args) {
     pthread_mutex_init(&mutex, NULL);
@@ -41,7 +39,8 @@ DWORD WINAPI ConnectionHandler(void *args) {
 
         if (n < 0) {
             perror("ERROR reading from socket");
-            exit(1);
+            closesocket(users[userId].socket);
+            break;
         }
 
         if (strcmp(buffer, "help\n") == 0) {
@@ -49,7 +48,8 @@ DWORD WINAPI ConnectionHandler(void *args) {
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
                 perror("ERROR writing to socket");
-                exit(1);
+                closesocket(users[userId].socket);
+                break;
             }
             close((int) users[userId].socket);
             memset(buffer, 0, BUFFLEN);
@@ -61,7 +61,8 @@ DWORD WINAPI ConnectionHandler(void *args) {
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
                 perror("ERROR writin1g to socket");
-                exit(1);
+                closesocket(users[userId].socket);
+                break;
             }
             close((int) users[userId].socket);
             memset(buffer, 0, BUFFLEN);
@@ -72,8 +73,9 @@ DWORD WINAPI ConnectionHandler(void *args) {
             strcpy(buffer, add(buffer));
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
-                perror("1ERROR writing to socket");
-                exit(1);
+                perror("ERROR writing to socket");
+                closesocket(users[userId].socket);
+                break;
             }
             close((int) users[userId].socket);
             memset(buffer, 0, BUFFLEN);
@@ -84,8 +86,9 @@ DWORD WINAPI ConnectionHandler(void *args) {
             strcpy(buffer, delete(buffer));
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
-                perror("2ERROR writing to socket");
-                exit(1);
+                perror("ERROR writing to socket");
+                closesocket(users[userId].socket);
+                break;
             }
             close((int) users[userId].socket);
             memset(buffer, 0, BUFFLEN);
@@ -96,8 +99,9 @@ DWORD WINAPI ConnectionHandler(void *args) {
             strcpy(buffer, find(buffer + 1));
 
             if (SendBytes(users[userId].socket, buffer) < 0) {
-                perror("3ERROR writing to socket");
-                exit(1);
+                perror("ERROR writing to socket");
+                closesocket(users[userId].socket);
+                break;
             }
             close((int) users[userId].socket);
             memset(buffer, 0, BUFFLEN);
@@ -108,8 +112,12 @@ DWORD WINAPI ConnectionHandler(void *args) {
         memset(buffer, 0, BUFFLEN);
         /* send a response to the client */
         if (SendBytes(users[userId].socket, "Command not found, try help for info") < 0) {
-            perror("4ERROR writing to socket");
-            exit(1);
+            perror("ERROR writing to socket");
+            closesocket(users[userId].socket);
+            break;
         }
     }
+
+    nextUser--;
+    return 0;
 }

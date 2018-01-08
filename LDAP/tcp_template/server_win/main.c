@@ -1,12 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <netdb.h>
 #include "server.h"
 
 #define MAX_CLIENTS 5
 
-int usersOnline;
-int registeredUsers;
 int nextUser;
 argsT args;
 
@@ -39,28 +36,25 @@ int main(int argc, char *argv[]) {
     if (bind(serverSocket, (SOCKADDR *) &server, sizeof(server)) == SOCKET_ERROR) {
         printf("Bind failed with error code : %d", WSAGetLastError());
     }
+
     //Listen to incoming connections
     listen(serverSocket, MAX_CLIENTS);
 
-    /* Initialize socket structure */
+    //Initialize socket structure
     printf("server start\n");
 
-    int clilen = sizeof(struct sockaddr_in);
-    usersOnline = 0;
-    nextUser = 0;
+    int client_length = sizeof(struct sockaddr_in);
+
     char buffer[256];
-    while ((accSocket = accept(serverSocket, (SOCKADDR *) &client, &clilen))) {
-        printf("New connection!\n");
+    while ((accSocket = accept(serverSocket, (SOCKADDR *) &client, &client_length))) {
+
         args.ip = inet_ntoa(client.sin_addr);
         args.port = ntohs(client.sin_port);
         args.socket = (int) accSocket;
         HANDLE thread = CreateThread(NULL, 0, ConnectionHandler, &args, 0, NULL);
-        usersOnline++;
 
-        printf("Thread created for: %s; on Port: %d,socket :[%d]\n", inet_ntoa(client.sin_addr), ntohs(client.sin_port),
-               (int) accSocket);
-        printf("Current online : %d\n", usersOnline);
-
+        printf("New connection\nThread created for: %s; on Port: %d,socket :[%d]\n", inet_ntoa(client.sin_addr),
+               ntohs(client.sin_port), (int) accSocket);
     }
 
     if (accSocket < 0) {
