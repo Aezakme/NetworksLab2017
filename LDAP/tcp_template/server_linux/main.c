@@ -11,9 +11,6 @@
 char buffer[500];
 
 
-
-
-
 int main(int argc, char *argv[]) {
 
     init();
@@ -26,27 +23,53 @@ int main(int argc, char *argv[]) {
     ssize_t n;
 
 
-    serverfd = socket(AF_INET, SOCK_STREAM, 0);
+//    serverfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (serverfd < 0) {
-        perror("ERROR opening socket");
-        exit(1);
-    }
-
-    /* Initialize socket structure */
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(port_no);
-
-    /* Now bind the host address using bind() call.*/
-    if (bind(serverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-        perror("ERROR on binding");
-        exit(1);
-    }
+////    if (serverfd < 0) {
+////        perror("ERROR opening socket");
+////        exit(1);
+////    }
+//
+//    /* Initialize socket structure */
+//    bzero((char *) &serv_addr, sizeof(serv_addr));
+//
+//    serv_addr.sin_family = AF_INET;
+//    serv_addr.sin_addr.s_addr = INADDR_ANY;
+//    serv_addr.sin_port = htons(port_no);
+//
+//    /* Now bind the host address using bind() call.*/
+//    if (bind(serverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+//        perror("ERROR on binding");
+//        exit(1);
+//    }
 
     printf("server start\n");
+
+    printf(showHelp());
+    printf("\n");
+    printf(showAll());
+
+    printf("\n== add ==\n");
+    bzero(buffer, 256);
+    strcpy(buffer, "add ca=USA,cy=Kalifornia,co=Google,em=Sergey Brin");
+    printf(add(buffer));
+    printf("\n");
+    printf(showAll());
+
+    printf("\n== fnd ==\n");
+    bzero(buffer, 256);
+    strcpy(buffer, "co=Google");
+    printf(find(buffer));
+
+    printf("\n== del ==\n");
+    bzero(buffer, 256);
+    strcpy(buffer, "ca=RUSSIA,cy=Saint-Petersburg,co=SPbSTU,em=Aleksyuk Artyom");
+    printf(delete(buffer));
+    printf("\n");
+    printf(showAll());
+
+
+    return 0;
 
     /* Now start listening for the clients, here process will
        * go in sleep mode and will wait for the incoming connection
